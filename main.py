@@ -1,11 +1,13 @@
-import discord, os, sqlite3, count, time
+#/usr/bin/env/python3
+import discord, os, sys,sqlite3, count, time
 from datetime import datetime, timedelta
 
+os.chdir(sys.path[0]) # changed working dir as script dir to get fixed relative access to data
 TOKEN = os.environ["nalgang_TOKEN"]
 client = discord.Client()
 
 class Member:
-    conn = sqlite3.connect("../data/member.db")
+    conn = sqlite3.connect("./data/member.db")
     c = conn.cursor()
     def __init__(self, id_num, name="temp"):
         self.id_num = id_num
@@ -88,7 +90,7 @@ class Member:
 
 def sql_access(func):
     def access_table_wrapper(*args, **kwargs):
-        kwargs['conn'] = sqlite3.connect("../data/member.db")
+        kwargs['conn'] = sqlite3.connect("./data/member.db")
         kwargs['c'] = kwargs['conn'].cursor()
         r = func(*args, **kwargs)
         kwargs['conn'].close()
