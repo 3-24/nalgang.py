@@ -149,7 +149,7 @@ async def on_message(message):
     global update_time
 
     if message.author.bot: return
-    if message.content == ('!날갱') or message.content == ('!출첵'):
+    if message.content == ('!날갱'):
         m = Member(message.author.id, message.author.display_name)
         if update_time == None:
             update_time=datetime.today() - update_time_delta
@@ -170,7 +170,7 @@ async def on_message(message):
             else:
                 await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(m.name,p))
     
-    if message.content.startswith("!날갱점수") or message.content.startswith("!출첵점수"):
+    if message.content.startswith("!날갱점수"):
         arglist = message.content.split()
         if len(arglist) >= 3:
             await message.channel.send("잘못된 입력입니다.")
@@ -229,14 +229,14 @@ async def on_message(message):
             m0.give_point(m1, point)
             await message.channel.send("짜잔! {:s}님이 {:s}님에게 {:d}점을 선물했습니다.".format(m0.name,m1.name,point))
 
-    if message.content == ("!날갱도움") or message.content == ("!출첵도움"):
+    if message.content == ("!날갱도움"):
         await message.channel.send("```"+\
-                "!날갱, !출첵 : 명령어가 곧 내용\n"+\
-                "!날갱점수, !출첵점수 : 내 점수 확인하기\n"+\
+                "!날갱 : 명령어가 곧 내용\n"+\
+                "!날갱점수 : 내 점수 확인하기\n"+\
                 "!id : 나의 $id 확인하기\n"+\
-                "!날갱점수, !출첵점수 $id : $id의 점수 확인하기\n"+\
-                "!점수보내기 $id $pt: $id를 가진 계정으로 $pt만큼의 점수 보내기\n"+\
-                "!날갱도움, !출첵도움 : 도움말\n"+\
+                "!날갱점수 $id : $id의 점수 확인하기\n"+\
+                "!점수보내기 $id $pt : $id를 가진 계정으로 $pt만큼의 점수 보내기\n"+\
+                "!날갱도움 : 도움말\n"+\
                 "```")
 
 client.run(TOKEN)
