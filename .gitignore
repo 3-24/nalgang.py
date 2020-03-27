@@ -1,2 +1,3 @@
 *__pycache__*
 data/attendance_count.txt
+data/.gitignore
