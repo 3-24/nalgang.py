@@ -155,7 +155,7 @@ async def on_message(message):
             update_time=datetime.today() - update_time_delta
         else:
             c = datetime.today() - update_time_delta
-            if c.day > update_time.day:
+            if c.day > update_time.day or c.month > update_time.month or c.year > update_time.year:
                 day_reset()
                 update_time = c
 
