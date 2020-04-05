@@ -25,4 +25,6 @@ TOKEN = os.environ["nalgang_TOKEN"]
 을 요구하는데, 디스코드 개발자 포털에서 제공하는 토큰을 `nalgang_TOKEN`이라는 이름의 환경변수로 저장하거나 저 코드를 고치면 됩니다.
 
 ## 실행
-```python3 main.py```
+```bash
+python3 main.py
+```
