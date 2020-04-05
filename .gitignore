@@ -1,4 +1,2 @@
 *__pycache__*
-data/member.db
-data/.gitignore
-data/attendance_count.txt
+data/*
