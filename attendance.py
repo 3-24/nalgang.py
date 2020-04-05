@@ -4,6 +4,8 @@ import count
 conn = sqlite3.connect("./data/member.db")
 c = conn.cursor()
 
+table_init()
+
 class Member:
     def __init__(self, id_num, name="temp"):
         self.id_num = id_num
