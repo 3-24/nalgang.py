@@ -1,17 +1,20 @@
 import os, discord
-from attendance import Member, day_reset
+from attendance import Member, day_reset, conn, table_init
 from datetime import datetime, timedelta
+from access_data import *
+
+update_time_delta = timedelta(hours=6, minutes=0)
+client = discord.Client()
+table_init()
 
 def check_int(s):
-    try:
-        return str(int(s)) == s
-    except ValueError:
-        return False
+    try: return str(int(s)) == s
+    except ValueError: return False
 
-update_time = None
-update_time_delta = timedelta(hours=6, minutes=0)
-
-client = discord.Client()
+def is_day_changed(past_time, present_time, delta):
+    past_delta = past_time - delta
+    present_delta = present_time - delta
+    return present_delta.day > past_delta.day or present_delta.month > past_delta.month or present_delta.year > past_delta.year 
 
 @client.event
 async def on_ready():
@@ -19,18 +22,15 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    global update_time
-
+    conn.commit()
     if message.author.bot: return
+    
     if message.content == ('!날갱'):
         m = Member(message.author.id, message.author.display_name)
-        if update_time == None:
-            update_time=datetime.today() - update_time_delta
-        else:
-            c = datetime.today() - update_time_delta
-            if c.day > update_time.day or c.month > update_time.month or c.year > update_time.year:
-                day_reset()
-                update_time = c
+        present_time = datetime.today()
+        if is_day_changed(time_read(), present_time, update_time_delta):
+            day_reset()
+            time_save(present_time)
 
         p,cp = m.update_attendance_and_point()
         

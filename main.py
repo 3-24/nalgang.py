@@ -1,5 +1,5 @@
 #/usr/bin/env/python3
-import os, sys, count, time
+import os, sys, time
 from bot import client
 
 if not __name__=="__main__":
