@@ -91,13 +91,13 @@ async def on_message(message):
         member_send.give_point(member_receive, point)
         await message.channel.send("짜잔! {:s}님이 {:s}님에게 {:d}점을 선물했습니다.".format(member_send.mention(), member_receive.mention(), point))
 
-    if message.content == ("!날갱도움"):
+    if message.content == ("!도움"):
         await message.channel.send("```"+\
                 "!날갱 : 명령어가 곧 내용\n"+\
                 "!점수 : 내 점수 확인하기\n"+\
                 "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n"+\
                 "!보내기 @멘션 점수 : 멘션한 계정으로 점수 보내기\n"+\
-                "!날갱도움 : 도움말\n"+\
+                "!도움 : 도움말\n"+\
                 "```")
     
     conn.commit()
