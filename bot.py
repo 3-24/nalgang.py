@@ -27,20 +27,21 @@ async def on_message(message):
     if message.author.bot: return
 
     member = Member(message.author)
-
     if message.content == ('!날갱'):
         present_time = datetime.today()
         if is_day_changed(time_read(), present_time, update_time_delta):
             day_reset()
             time_save(present_time)
 
-        p,cp = member.update_attendance_and_point()
+        result = member.update_attendance_and_point()
 
-        if p == -1:
-            await message.channel.send("{:s}님은 이미 날갱되었습니다. ({:d}연속 출석 중)".format(member.name,member.get_combo()))
-        elif member.get_combo()>1:
-            await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다! {:d}연속 출석으로 {:d}점을 추가로 얻었습니다!".format(member.name,p,member.get_combo(),cp))
-        else: await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,p))
+        if result == None:
+            await message.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
+        else:
+            point, combo_point = result
+            await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
+            if combo_point != 0:
+                await message.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
 
     if message.content.startswith("!점수"):
         ids = message.raw_mentions

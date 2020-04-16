@@ -19,29 +19,20 @@ class Member:
     
     def get_point(self):
         c.execute('''SELECT point FROM Members WHERE id=:Id''', {"Id":self.id_num})
-        P = c.fetchall()
-        if not P:
-            self.add_db()
-            return 0
-        else:
-            assert len(P) == 1
-            return P[0][0]
+        P = c.fetchone()
+        if P == None: return None
+        else: return P[0]
 
-
-    def add_point(self,p):
+    def add_point(self,point):
         prev_point = self.get_point()
-        c.execute('''UPDATE Members SET point=:point WHERE id=:Id''', {"Id":self.id_num, "point":p+prev_point})
+        c.execute('''UPDATE Members SET point=:point WHERE id=:Id''', {"Id":self.id_num, "point":prev_point+point})
         return
 
     def get_combo(self):
         c.execute('''SELECT combo FROM Members WHERE id=:Id''', {"Id":self.id_num})
-        P = c.fetchall()
-        if not P:
-            self.add_db()
-            return 0
-        else:
-            assert len(P) == 1
-            return P[0][0]
+        P = c.fetchone()
+        if P == None: return None
+        else: return P[0]
 
     def update_combo(self,reset=False):
         if reset:
@@ -54,27 +45,40 @@ class Member:
 
     def check_attendance(self):
         c.execute('''SELECT * FROM AttendanceTable WHERE id= :Id''', {"Id": self.id_num})
-        attendance = c.fetchall()
-        return attendance != []
+        attendance = c.fetchone()
+        return attendance != None
     
     def set_attendance(self):
         c.execute('''INSERT INTO AttendanceTable VALUES (:Id)''',{"Id":self.id_num})
         return
 
-    def update_attendance_and_point(self): # returb added point, combo point
-        if self.check_attendance(): return -1, 0
+    def update_attendance_and_point(self):
+        if self.check_attendance():
+            return None
         self.set_attendance()
+
+        # handle points
         pointmap = [10,5,3,1]
-        attcount = min(count_read(),3)
-        p = pointmap[attcount]
-        self.add_point(p)
-        cp=self.get_combo()
-        # cp modify
-        cp = min(cp,7)
+        pointmap_ind = min(count_read(),3)
+        point = pointmap[pointmap_ind]
+
+        if self.get_point() == None: self.add_db()
+        self.add_point(point)
+
+        # handle combo
+        combo_point = 0
         self.update_combo()
-        self.add_point(cp)
+        if self.get_combo() % 7 == 0:
+            combo_point += 20
+        
+        if self.get_combo() % 30 == 0:
+            combo_point += 100
+        
+        self.add_point(combo_point)
+
+
         count_add()
-        return p, cp
+        return point, combo_point
 
 
     def give_point(self,member,point):
