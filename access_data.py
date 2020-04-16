@@ -1,8 +1,4 @@
 from datetime import datetime
-import os,sys
-
-os.chdir(sys.path[0]) # change working dir as script dir to get fixed relative access to data
-if not os.path.exists("data"): os.makedirs("data")
 
 def count_read():
     try:
