@@ -27,9 +27,6 @@ async def on_message(message):
     if message.author.bot: return
 
     member = Member(message.author)
-    if member.get_point() == 0:
-        await message.channel.send("등록되지 않은 사용자입니다.")
-        return
     
     if message.content == ('!날갱'):
         present_time = datetime.today()
@@ -46,6 +43,10 @@ async def on_message(message):
             await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
             if combo_point != 0:
                 await message.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
+    
+    if member.get_point() == None:
+        await message.channel.send("등록되지 않은 사용자입니다.")
+        return
 
     if message.content.startswith("!점수"):
         ids = message.raw_mentions
@@ -94,8 +95,8 @@ async def on_message(message):
         await message.channel.send("```"+\
                 "!날갱 : 명령어가 곧 내용\n"+\
                 "!점수 : 내 점수 확인하기\n"+\
-                "!점수 @멘션 : 다른 사람의 점수 확인하기\n"+\
-                "!보내기 @멘션 점수 : 다른 계정으로 점수 보내기\n"+\
+                "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n"+\
+                "!보내기 @멘션 점수 : 멘션한 계정으로 점수 보내기\n"+\
                 "!날갱도움 : 도움말\n"+\
                 "```")
     
