@@ -43,19 +43,16 @@ async def on_message(message):
             await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
             if combo_point != 0:
                 await message.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
-    
-    if member.get_point() == None:
-        await message.channel.send("등록되지 않은 사용자입니다.")
-        return
 
     if message.content.startswith("!점수"):
         ids = message.raw_mentions
         arglist = message.content.split()
         if ids != []:
             member = Member(message.guild.get_member(ids[0]))
-            if member.get_point() == None:
-                await message.channel.send("등록되지 않은 사용자입니다.")
-                return
+        
+        if not member.exist_db():
+            await message.channel.send("등록되지 않은 사용자입니다.")
+            return
         
         await message.channel.send("{:s}님의 날갱점수는 {:d}점입니다. {:d}연속 출석 중입니다.".format(member.name, member.get_point(), member.get_combo()))
 
@@ -78,7 +75,7 @@ async def on_message(message):
         
         member_send = member
         member_receive = Member(message.guild.get_member(ids[0]))
-        if member_receive.get_point() == None:
+        if not (member_send.exist_db() and member_receive.exist_db):
             await message.channel.send("등록되지 않은 사용자입니다.")
             return
 

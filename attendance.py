@@ -13,10 +13,17 @@ class Member:
     
     def mention(self):
         return self.user.mention
+    
+    def exist_db(self):
+        c.execute('''SELECT id FROM Members WHERE id=:Id''', {"Id":self.id_num})
+        P = c.fetchone()
+        if P == None: return False
+        else: return True
 
     def add_db(self,point=0,combo=0):
         c.execute('''INSERT INTO Members VALUES (:Id, :point, :combo)''',{"Id":self.id_num, "point":point, "combo":combo})
     
+
     def get_point(self):
         c.execute('''SELECT point FROM Members WHERE id=:Id''', {"Id":self.id_num})
         P = c.fetchone()
