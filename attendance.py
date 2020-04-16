@@ -5,7 +5,7 @@ conn = sqlite3.connect("./data/member.db")
 c = conn.cursor()
 
 class Member:
-    def __init__(self, id_num, name="temp"):
+    def __init__(self, id_num, name=None):
         self.id_num = id_num
         self.name = name
         return
