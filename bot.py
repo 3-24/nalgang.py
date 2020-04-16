@@ -27,6 +27,10 @@ async def on_message(message):
     if message.author.bot: return
 
     member = Member(message.author)
+    if member.get_point() == 0:
+        await message.channel.send("등록되지 않은 사용자입니다.")
+        return
+    
     if message.content == ('!날갱'):
         present_time = datetime.today()
         if is_day_changed(time_read(), present_time, update_time_delta):
@@ -48,6 +52,9 @@ async def on_message(message):
         arglist = message.content.split()
         if ids != []:
             member = Member(message.guild.get_member(ids[0]))
+            if member.get_point() == None:
+                await message.channel.send("등록되지 않은 사용자입니다.")
+                return
         
         await message.channel.send("{:s}님의 날갱점수는 {:d}점입니다. {:d}연속 출석 중입니다.".format(member.name, member.get_point(), member.get_combo()))
 
@@ -70,6 +77,10 @@ async def on_message(message):
         
         member_send = member
         member_receive = Member(message.guild.get_member(ids[0]))
+        if member_receive.get_point() == None:
+            await message.channel.send("등록되지 않은 사용자입니다.")
+            return
+
         point = int(arglist[2])
 
         if member_send.get_point() < point:
