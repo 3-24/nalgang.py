@@ -1,5 +1,8 @@
-import sqlite3
+import sqlite3, os, sys
 from access_data import *
+
+os.chdir(sys.path[0]) # change working dir as script dir to get fixed relative access to data
+if not os.path.exists("data"): os.makedirs("data")
 
 conn = sqlite3.connect("./data/member.db")
 c = conn.cursor()
