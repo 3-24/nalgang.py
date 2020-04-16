@@ -47,7 +47,7 @@ async def on_message(message):
         ids = message.raw_mentions
         arglist = message.content.split()
         if ids != []:
-            member = Member(client.get_user(ids[0]))
+            member = Member(message.guild.get_member(ids[0]))
         
         await message.channel.send("{:s}님의 날갱점수는 {:d}점입니다. {:d}연속 출석 중입니다.".format(member.name, member.get_point(), member.get_combo()))
 
@@ -69,7 +69,7 @@ async def on_message(message):
             return
         
         member_send = member
-        member_receive = Member(client.get_user(ids[0]))
+        member_receive = Member(message.guild.get_member(ids[0]))
         point = int(arglist[2])
 
         if member_send.get_point() < point:
