@@ -5,10 +5,14 @@ conn = sqlite3.connect("./data/member.db")
 c = conn.cursor()
 
 class Member:
-    def __init__(self, id_num, name=None):
-        self.id_num = id_num
-        self.name = name
+    def __init__(self, user):
+        self.id_num = user.id
+        self.name = user.display_name
+        self.user = user
         return
+    
+    def mention(self):
+        return self.user.mention
 
     def add_db(self,point=0,combo=0):
         c.execute('''INSERT INTO Members VALUES (:Id, :point, :combo)''',{"Id":self.id_num, "point":point, "combo":combo})
@@ -60,7 +64,7 @@ class Member:
     def update_attendance_and_point(self): # returb added point, combo point
         if self.check_attendance(): return -1, 0
         self.set_attendance()
-        pointmap = [20,10,3,1]
+        pointmap = [10,5,3,1]
         attcount = min(count_read(),3)
         p = pointmap[attcount]
         self.add_point(p)
