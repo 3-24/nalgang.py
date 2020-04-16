@@ -7,7 +7,7 @@ c = conn.cursor()
 class Member:
     def __init__(self, user):
         self.id_num = user.id
-        self.name = user.display_name
+        self.name = user.name
         self.user = user
         return
     
