@@ -95,6 +95,8 @@ async def on_message(message):
                 "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n"+\
                 "!보내기 @멘션 점수 : 멘션한 계정으로 점수 보내기\n"+\
                 "!도움 : 도움말\n"+\
+                "\n"+\
+                "깃허브 : https://github.com/3-24/nalgang\n"+\
                 "```")
     
     conn.commit()
