@@ -6,6 +6,7 @@ from access_data import *
 update_time_delta = timedelta(hours=6, minutes=0)
 client = discord.Client()
 table_init()
+admin_ids = [419370093273939981]
 
 def check_int(s):
     try: return str(int(s)) == s
@@ -90,6 +91,32 @@ async def on_message(message):
         member_send.give_point(member_receive, point)
         await message.channel.send("짜잔! {:s}님이 {:s}님에게 {:d}점을 선물했습니다.".format(member_send.mention(), member_receive.mention(), point))
         return
+    
+    if message.content.startswith("!강제날갱"):
+        if not (message.author.id in admin_ids):
+            return
+        ids = message.raw_mentions
+        for Id in ids:
+            member = Member(message.guild.get_member(Id))
+            result = member.update_attendance_and_point()
+
+            if result == None:
+                await message.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
+            else:
+                point, combo_point = result
+                await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
+                if combo_point != 0:
+                    await message.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
+        return
+    
+    if message.content == ("!초기화"):
+        if not (message.author.id in admin_ids):
+            return
+        present_time = datetime.today()
+        day_reset()
+        time_save(present_time)
+        await message.channel.send("날짜가 초기화되었습니다.")
+        return
 
     if message.content == ("!도움"):
         await message.channel.send("```"+\
@@ -98,6 +125,10 @@ async def on_message(message):
                 "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n"+\
                 "!보내기 @멘션 점수 : 멘션한 계정으로 점수 보내기\n"+\
                 "!도움 : 도움말\n"+\
+                "\n"+\
+                "관리자 전용\n"+\
+                "!강제날갱 @멘션 @멘션 : 멘션한 사람들을 날갱시키기\n"+\
+                "!초기화 : 날짜 초기화시키기\n"+\
                 "\n"+\
                 "깃허브 : https://github.com/3-24/nalgang\n"+\
                 "```")
