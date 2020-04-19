@@ -43,6 +43,7 @@ async def on_message(message):
             await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
             if combo_point != 0:
                 await message.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
+        return
 
     if message.content.startswith("!점수"):
         ids = message.raw_mentions
@@ -55,6 +56,7 @@ async def on_message(message):
             return
         
         await message.channel.send("{:s}님의 날갱점수는 {:d}점입니다. {:d}연속 출석 중입니다.".format(member.name, member.get_point(), member.get_combo()))
+        return
 
     if message.content.startswith("!보내기"):
         arglist = message.content.split()
@@ -87,6 +89,7 @@ async def on_message(message):
 
         member_send.give_point(member_receive, point)
         await message.channel.send("짜잔! {:s}님이 {:s}님에게 {:d}점을 선물했습니다.".format(member_send.mention(), member_receive.mention(), point))
+        return
 
     if message.content == ("!도움"):
         await message.channel.send("```"+\
@@ -98,5 +101,6 @@ async def on_message(message):
                 "\n"+\
                 "깃허브 : https://github.com/3-24/nalgang\n"+\
                 "```")
+        return
     
     conn.commit()
