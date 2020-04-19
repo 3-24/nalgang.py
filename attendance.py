@@ -106,10 +106,9 @@ def combo_reset():
     attendenceList=[i[0] for i in c.fetchall()]
     c.execute('''SELECT id FROM Members''')
     memberList=[i[0] for i in c.fetchall()]
-    for member in memberList:
-        if member not in attendenceList:
-            m=Member(member)
-            m.update_combo(True)
+    for Id in memberList:
+        if Id not in attendenceList:
+            c.execute('''UPDATE Members SET combo=:combo WHERE id=:Id''', {"Id":Id, "combo":0})
     return
 
 
