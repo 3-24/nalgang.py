@@ -1,5 +1,5 @@
 import os, discord
-from attendance import Member, day_reset, conn, table_init
+from attendance import Member, day_reset, conn, table_init, get_all_attendance_info
 from datetime import datetime, timedelta
 from access_data import *
 
@@ -29,13 +29,17 @@ async def on_message(message):
 
     member = Member(message.author)
     
-    if message.content == ('!날갱'):
+    if message.content.startswith("!날갱"):
+        msg = message.content.lstrip("!날갱")
+        if len(msg) > 280:
+            msg = msg[:280]
+        
         present_time = datetime.today()
         if is_day_changed(time_read(), present_time, update_time_delta):
             day_reset()
             time_save(present_time)
 
-        result = member.update_attendance_and_point()
+        result = member.update_attendance_and_point(msg)
 
         if result == None:
             await message.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
@@ -44,8 +48,18 @@ async def on_message(message):
             await message.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
             if combo_point != 0:
                 await message.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
-        return
+        
+        attendance_info = get_all_attendance_info()
+        description = ""
+        for index, info in enumerate(attendance_info):
+            name = message.guild.get_member(info[0]).display_name
+            msg = info[1]
+            description += str(index+1) + ". " + name + ": " + msg + "\n"
 
+        embed = discord.Embed(title="오늘의 날갱", description=description)
+        await message.channel.send(embed=embed)
+        return
+    
     if message.content.startswith("!점수"):
         ids = message.raw_mentions
         arglist = message.content.split()

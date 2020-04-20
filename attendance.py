@@ -55,14 +55,14 @@ class Member:
         attendance = c.fetchone()
         return attendance != None
     
-    def set_attendance(self):
-        c.execute('''INSERT INTO AttendanceTable VALUES (:Id)''',{"Id":self.id_num})
+    def set_attendance(self, msg):
+        c.execute('''INSERT INTO AttendanceTable VALUES (:Id, :message)''',{"Id":self.id_num, "message":msg})
         return
 
-    def update_attendance_and_point(self):
+    def update_attendance_and_point(self, msg):
         if self.check_attendance():
             return None
-        self.set_attendance()
+        self.set_attendance(msg)
 
         # handle points
         pointmap = [10,5,3,1]
@@ -97,7 +97,7 @@ class Member:
 
 def table_init():
     c.execute('''CREATE TABLE IF NOT EXISTS Members (id integer, point integer, combo integer)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS AttendanceTable (id integer)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS AttendanceTable (id integer, message nvarchar)''')
     return
 
 
@@ -118,3 +118,7 @@ def day_reset():
     table_init()
     count_save(0)
     return
+
+def get_all_attendance_info():
+    c.execute('''SELECT * FROM AttendanceTable''')
+    return c.fetchall()
