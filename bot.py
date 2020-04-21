@@ -1,5 +1,5 @@
 import os, discord
-from attendance import Member, day_reset, conn, table_init, get_all_attendance_info
+from attendance import Member, day_reset, conn, table_init, get_all_attendance_info, scoreboard
 from datetime import datetime, timedelta
 from access_data import *
 
@@ -106,6 +106,11 @@ async def on_message(message):
         await message.channel.send("짜잔! {:s}님이 {:s}님에게 {:d}점을 선물했습니다.".format(member_send.mention(), member_receive.mention(), point))
         return
     
+    if message.content == ("!순위표"):
+        embed = discord.Embed(title="순위표", description=scoreboard(message.author.guild))
+        await message.channel.send(embed=embed)
+        return
+
     if message.content.startswith("!강제날갱"):
         if not (message.author.id in admin_ids):
             return
