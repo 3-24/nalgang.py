@@ -151,6 +151,8 @@ async def on_message(message):
         return
     
     if message.content == ("!잠금"):
+        if not (message.author.id in admin_ids):
+            return
         attendance_lock(message.author.guild)
         return
 
