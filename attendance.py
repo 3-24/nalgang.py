@@ -34,12 +34,20 @@ class Member:
         prev_point = self.get_point()
         c.execute('''UPDATE Members SET point=:point WHERE id=:Id''', {"Id":self.id_num, "point":prev_point+point})
         return
+    
+    def set_point(self,point):
+        c.execute('''UPDATE Members SET point=:point WHERE id=:Id''', {"Id":self.id_num, "point":point})
+        return
 
     def get_combo(self):
         c.execute('''SELECT combo FROM Members WHERE id=:Id''', {"Id":self.id_num})
         P = c.fetchone()
         if P == None: return None
         else: return P[0]
+    
+    def set_combo(self,combo):
+        c.execute('''UPDATE Members SET combo=:combo WHERE id=:Id''', {"Id":self.id_num, "combo":combo})
+        return
 
     def update_combo(self,reset=False):
         if reset:
@@ -141,3 +149,13 @@ def scoreboard(guild):
         s+="{:d}. {:d}점 {:s}\n".format(rank,Point,member.name)
         count += 1
     return s
+
+def attendance_lock(guild):
+    c.execute('''SELECT id FROM Members''')
+    for Id in c.fetchall():
+        user = guild.get_member(Id[0])
+        if user == None: continue
+        member = Member(user)
+        member.set_attendance("")
+    return
+        

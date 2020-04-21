@@ -1,5 +1,5 @@
 import os, discord
-from attendance import Member, day_reset, conn, table_init, get_all_attendance_info, scoreboard
+from attendance import Member, day_reset, conn, table_init, get_all_attendance_info, scoreboard, attendance_lock
 from datetime import datetime, timedelta
 from access_data import *
 
@@ -128,6 +128,19 @@ async def on_message(message):
                     await message.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
         return
     
+    if message.content.startswith("!강제변경"):
+        if not (message.author.id in admin_ids):
+            return
+        Id = message.raw_mentions[0]
+        member = Member(message.guild.get_member(Id))
+        arglist = message.content.split()
+        point_after = int(arglist[2])
+        combo_after = int(arglist[3])
+        member.set_point(point_after)
+        member.set_combo(combo_after)
+        return
+
+
     if message.content == ("!초기화"):
         if not (message.author.id in admin_ids):
             return
@@ -135,6 +148,10 @@ async def on_message(message):
         day_reset()
         time_save(present_time)
         await message.channel.send("날짜가 초기화되었습니다.")
+        return
+    
+    if message.content == ("!잠금"):
+        attendance_lock(message.author.guild)
         return
 
     if message.content == ("!도움"):
