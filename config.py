@@ -1,0 +1,1 @@
+admin_ids = [] # put discord ids in list

@@ -2,11 +2,11 @@ import os, discord
 from attendance import Member, day_reset, conn, table_init, get_all_attendance_info, scoreboard, attendance_lock
 from datetime import datetime, timedelta
 from access_data import *
+from config import admin_ids
 
 update_time_delta = timedelta(hours=6, minutes=0)
 client = discord.Client()
 table_init()
-admin_ids = [419370093273939981]
 
 def check_int(s):
     try: return str(int(s)) == s
