@@ -1,5 +1,6 @@
 import sqlite3
 from access_data import *
+from config import point_by_rank, week_bonus, month_bonus
 
 conn = sqlite3.connect("./data/member.db")
 c = conn.cursor()
@@ -73,9 +74,7 @@ class Member:
         self.set_attendance(msg)
 
         # handle points
-        pointmap = [10,5,3,1]
-        pointmap_ind = min(count_read(),3)
-        point = pointmap[pointmap_ind]
+        point = point_by_rank[min(count_read(),len(point_by_rank)-1)]
 
         if self.get_point() == None: self.add_db()
         self.add_point(point)
@@ -84,13 +83,12 @@ class Member:
         combo_point = 0
         self.update_combo()
         if self.get_combo() % 7 == 0:
-            combo_point += 20
+            combo_point += week_bonus
         
         if self.get_combo() % 30 == 0:
-            combo_point += 100
+            combo_point += month_bonus
         
         self.add_point(combo_point)
-
 
         count_add()
         return point, combo_point
