@@ -50,15 +50,9 @@ class Member:
         c.execute('''UPDATE Members SET combo=:combo WHERE id=:Id''', {"Id":self.id_num, "combo":combo})
         return
 
-    def update_combo(self,reset=False):
-        if reset:
-            c.execute('''UPDATE Members SET combo=:combo WHERE id=:Id''', {"Id":self.id_num, "combo":0})
-        else:
-            combo = self.get_combo()
-            c.execute('''UPDATE Members SET combo=:combo WHERE id=:Id''', {"Id":self.id_num, "combo":combo+1})
-        return
-            
-
+    def add_combo(self, combo):
+        self.set_combo(self.get_combo()+combo)
+    
     def check_attendance(self):
         c.execute('''SELECT * FROM AttendanceTable WHERE id= :Id''', {"Id": self.id_num})
         attendance = c.fetchone()
@@ -81,7 +75,7 @@ class Member:
 
         # handle combo
         combo_point = 0
-        self.update_combo()
+        self.add_combo(1)
         if self.get_combo() % 7 == 0:
             combo_point += week_bonus
         
