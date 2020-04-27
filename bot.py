@@ -39,7 +39,7 @@ async def on_message(message):
             day_reset()
             time_save(present_time)
 
-        result = member.update_attendance_and_point(msg)
+        result = member.nalgang(msg)
 
         if result == None:
             await message.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))

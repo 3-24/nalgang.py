@@ -61,32 +61,33 @@ class Member:
     def set_attendance(self, msg):
         c.execute('''INSERT INTO AttendanceTable VALUES (:Id, :message)''',{"Id":self.id_num, "message":msg})
         return
-
-    def update_attendance_and_point(self, msg):
-        if self.check_attendance():
-            return None
-        self.set_attendance(msg)
-
-        # handle points
+    
+    def give_attendance_point(self):
         point = point_by_rank[min(count_read(),len(point_by_rank)-1)]
-
-        if self.get_point() == None: self.add_db()
         self.add_point(point)
-
-        # handle combo
-        combo_point = 0
-        self.add_combo(1)
+        return point
+    
+    def give_attendance_event_point(self):
+        event_point = 0
         if self.get_combo() % 7 == 0:
-            combo_point += week_bonus
-        
-        if self.get_combo() % 30 == 0:
-            combo_point += month_bonus
-        
-        self.add_point(combo_point)
+            event_point += week_bonus
+        if self.get_combo() % 30 = 0:
+            event_point += month_bonus
+        self.add_point(event_point)
+        return event_point
 
+    def nalgang(self,msg):
+        if self.check_attendance(): return None
+        self.set_attendance(msg)
+        if not self.exist_db():
+            self.add_db()
+        
+        point = self.give_attendance_point()
+        event_point = self.give_attendance_event_point()
+
+        self.add_combo(1)
         count_add()
-        return point, combo_point
-
+        return point, event_point
 
     def give_point(self,member,point):
         assert self.get_point() >= point >= 0
