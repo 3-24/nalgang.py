@@ -71,7 +71,7 @@ class Member:
         event_point = 0
         if self.get_combo() % 7 == 0:
             event_point += week_bonus
-        if self.get_combo() % 30 = 0:
+        if self.get_combo() % 30 == 0:
             event_point += month_bonus
         self.add_point(event_point)
         return event_point
@@ -130,13 +130,15 @@ def scoreboard(guild):
     point=float('inf')
     rank, count = 1,1
     for Id, Point in c.fetchall():
-        member=guild.get_member(Id)
-        if member==None: continue
+        user =guild.get_member(Id)
+        if user == None: continue
         if point != Point:
             rank = count
             point = Point
-        s+="{:d}. {:d}점 {:s}\n".format(rank,Point,member.name)
+        s+="{:d}. {:d}점 {:s}\n".format(rank, Point, user.display_name)
         count += 1
+        if count > 10:
+            break
     return s
 
 def attendance_lock(guild):
