@@ -82,10 +82,10 @@ class Member:
         if not self.exist_db():
             self.add_db()
         
+        self.add_combo(1)
         point = self.give_attendance_point()
         event_point = self.give_attendance_event_point()
 
-        self.add_combo(1)
         count_add()
         return point, event_point
 
