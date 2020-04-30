@@ -117,7 +117,7 @@ async def on_message(message):
         ids = message.raw_mentions
         for Id in ids:
             member = Member(message.guild.get_member(Id))
-            result = member.update_attendance_and_point("강제날갱")
+            result = member.nalgang("강제날갱")
 
             if result == None:
                 await message.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
