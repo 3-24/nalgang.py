@@ -1,17 +1,20 @@
 import sqlite3
 from access_data import *
 from config import point_by_rank, week_bonus, month_bonus
+import os
 
-conn = sqlite3.connect("./data/member.db")
+db_path = "./data/member.db"
+conn = sqlite3.connect(db_path)
 c = conn.cursor()
 
 class Member:
     def __init__(self, user):
-        self.id_num = user.id
-        self.name = user.display_name
-        self.user = user
+        if (user != None):
+            self.id_num = user.id
+            self.name = user.display_name
+            self.user = user
         return
-    
+
     def mention(self):
         return self.user.mention
     
@@ -149,4 +152,3 @@ def attendance_lock(guild):
         member = Member(user)
         member.set_attendance("")
     return
-        

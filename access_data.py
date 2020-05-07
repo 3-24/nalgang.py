@@ -1,15 +1,18 @@
 from datetime import datetime
 
+attendance_count_path = "./data/attendance_count.data"
+time_path = "./data/attendance_time.data"
+
 def count_read():
     try:
-        with open("./data/attendance_count.data",'r') as f:
+        with open(attendance_count_path,'r') as f:
             return int(f.readline().strip())
     except IOError:
         count_save(0)
         return 0
 
 def count_save(n):
-    with open("./data/attendance_count.data",'w') as f:
+    with open(attendance_count_path,'w') as f:
         f.write(str(n))
         return
 
@@ -17,7 +20,7 @@ def count_add(): count_save(count_read() + 1)
 
 def time_read():
     try:
-        with open("./data/attendance_time.data") as f:
+        with open(time_path,'r') as f:
             return datetime.fromtimestamp(float(f.readline().strip()))
     except IOError:
         t = datetime.today()
@@ -25,5 +28,5 @@ def time_read():
         return t
 
 def time_save(t):
-    with open("./data/attendance_time.data",'w') as f:
+    with open(time_path,'w') as f:
         f.write(str(datetime.timestamp(t)))
