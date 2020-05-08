@@ -1,7 +1,7 @@
 import os, discord
 from attendance import Member, day_reset, conn, table_init, get_all_attendance_info, scoreboard, attendance_lock
 from datetime import datetime, timedelta
-from access_data import *
+from access_data import time_read, time_save
 from config import admin_ids
 
 update_time_delta = timedelta(hours=6, minutes=0)
