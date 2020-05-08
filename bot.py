@@ -29,7 +29,6 @@ async def globally_block_bot(ctx):
 
 @client.command(name="날갱")
 async def nalgang(ctx, *, arg=""):
-    if ctx.author.bot: return
     member = Member(ctx.author)
     msg = arg
     if len(msg) > 280: msg = msg[:280]
@@ -62,10 +61,8 @@ async def nalgang(ctx, *, arg=""):
 
 @client.command(name="점수")
 async def point(ctx, arg=None):
-    if arg == None:
-        user = ctx.author
-    else:
-        user = commands.MemberConverter().convert(ctx,arg)
+    if arg == None: user = ctx.author
+    else: user = commands.MemberConverter().convert(ctx,arg)
     
     member = Member(user)
     
