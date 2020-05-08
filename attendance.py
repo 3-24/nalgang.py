@@ -26,6 +26,7 @@ class Member:
 
     def add_db(self,point=0,combo=0):
         c.execute('''INSERT INTO Members VALUES (:Id, :point, :combo)''',{"Id":self.id_num, "point":point, "combo":combo})
+        conn.commit()
     
 
     def get_point(self):
@@ -37,10 +38,12 @@ class Member:
     def add_point(self,point):
         prev_point = self.get_point()
         c.execute('''UPDATE Members SET point=:point WHERE id=:Id''', {"Id":self.id_num, "point":prev_point+point})
+        conn.commit()
         return
     
     def set_point(self,point):
         c.execute('''UPDATE Members SET point=:point WHERE id=:Id''', {"Id":self.id_num, "point":point})
+        conn.commit()
         return
 
     def get_combo(self):
@@ -51,6 +54,7 @@ class Member:
     
     def set_combo(self,combo):
         c.execute('''UPDATE Members SET combo=:combo WHERE id=:Id''', {"Id":self.id_num, "combo":combo})
+        conn.commit()
         return
 
     def add_combo(self, combo):
@@ -63,6 +67,7 @@ class Member:
     
     def set_attendance(self, msg):
         c.execute('''INSERT INTO AttendanceTable VALUES (:Id, :message)''',{"Id":self.id_num, "message":msg})
+        conn.commit()
         return
     
     def give_attendance_point(self):
@@ -102,6 +107,7 @@ class Member:
 def table_init():
     c.execute('''CREATE TABLE IF NOT EXISTS Members (id integer, point integer, combo integer)''')
     c.execute('''CREATE TABLE IF NOT EXISTS AttendanceTable (id integer, message nvarchar)''')
+    conn.commit()
     return
 
 
@@ -113,6 +119,7 @@ def combo_reset():
     for Id in memberList:
         if Id not in attendenceList:
             c.execute('''UPDATE Members SET combo=:combo WHERE id=:Id''', {"Id":Id, "combo":0})
+    conn.commit()
     return
 
 
@@ -121,6 +128,7 @@ def day_reset():
     c.execute('''DROP TABLE AttendanceTable''')
     table_init()
     count_save(0)
+    conn.commit()
     return
 
 def get_all_attendance_info():
