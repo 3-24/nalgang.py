@@ -18,6 +18,15 @@ def is_day_changed(past_time, present_time, delta):
     present_delta = present_time - delta
     return present_delta.day > past_delta.day or present_delta.month > past_delta.month or present_delta.year > past_delta.year
 
+@client.check
+async def globally_block_dms(ctx):
+    return ctx.guild is not None
+
+@client.check
+async def globally_block_bot(ctx):
+    return not ctx.author.bot
+
+
 @client.command(name="날갱")
 async def nalgang(ctx, *, arg=""):
     if ctx.author.bot: return
