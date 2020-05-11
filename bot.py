@@ -62,7 +62,7 @@ async def nalgang(ctx, *, arg=""):
 @client.command(name="점수")
 async def point(ctx, arg=None):
     if arg == None: user = ctx.author
-    else: user = commands.MemberConverter().convert(ctx,arg)
+    else: user = await commands.MemberConverter().convert(ctx,arg)
     
     member = Member(user)
     
