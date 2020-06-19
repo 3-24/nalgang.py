@@ -55,7 +55,7 @@ async def nalgang(ctx, *, arg=""):
         msg = info[1]
         description += str(index+1) + ". " + name + ": " + msg + "\n"
 
-    embed = discord.Embed(title="오늘의 날갱", description=description)
+    embed = discord.Embed(title="오늘의 날갱", description=markdown_escape(description))
     await ctx.channel.send(embed=embed)
     return
 
@@ -93,7 +93,7 @@ async def give_point(ctx, user:discord.Member, point:int):
 
 @client.command(name="순위표")
 async def send_ranking(ctx):
-    embed = discord.Embed(title="순위표", description=scoreboard(ctx.author.guild))
+    embed = discord.Embed(title="순위표", description=markdown_escape(scoreboard(ctx.author.guild)))
     await ctx.send(embed=embed)
     return
 
@@ -162,3 +162,7 @@ async def force_lock(ctx):
     attendance_lock(ctx.author.guild)
     await ctx.send("Successfully locked today's attendance")
     return
+
+
+def markdown_escape(string):
+    return string.replace('_','\\_').replace('`','\\`').replace('*','\\*').replace('~','\\~')
