@@ -24,6 +24,8 @@ async def globally_block_dms(ctx):
 
 @client.check
 async def globally_block_bot(ctx):
+    if ctx.author.id in admin_ids:
+        return not ctx.author.id == client.user.id
     return not ctx.author.bot
 
 
@@ -112,6 +114,8 @@ async def help_message(ctx):
             "!강제변경 @멘션 점수 콤보: 멘션한 계정의 점수와 콤보를 설정하기\n"+\
             "!초기화 : 날짜 초기화시키기\n"+\
             "!잠금 : 해당 날짜의 날갱을 막기\n"+\
+            "!점수조회 user: 해당 유저 점수만 반환\n"+\
+            "!점수추가 user delta: 해당 유저 점수 변경\n"+\
             "\n"+\
             "깃허브 : https://github.com/3-24/nalgang\n"+\
             "```")
@@ -163,6 +167,22 @@ async def force_lock(ctx):
     await ctx.send("Successfully locked today's attendance")
     return
 
+@client.command(name="점수조회")
+async def look_up(ctx, user: discord.Member):
+    if not (ctx.author.id in admin_ids): return
+    member = Member(user)
+    point = member.get_point()
+    await ctx.send(str(point))
+    return
+
+@client.command(name="점수추가")
+async def add(ctx, user: discord.Member, delta:int):
+    if not (ctx.author.id in admin_ids): return
+    member = Member(user)
+    prev_point = member.get_point()
+    member.set_point(prev_point+delta)
+    await ctx.send(f"Successfully added {delta} points to {user.display_name}, now {member.get_point()}")
+    return
 
 def markdown_escape(string):
     return string.replace('_','\\_').replace('`','\\`').replace('*','\\*').replace('~','\\~')
