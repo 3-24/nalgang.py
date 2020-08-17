@@ -2,7 +2,6 @@ import os, discord
 from attendance import Member, day_reset, conn, table_init, get_all_attendance_info, scoreboard, attendance_lock
 from datetime import datetime, timedelta
 from access_data import time_read, time_save
-from config import admin_ids
 from discord.ext import commands
 
 update_time_delta = timedelta(hours=6, minutes=0)
@@ -119,26 +118,25 @@ async def help_message(ctx):
 
 
 @client.command(name="강제날갱")
+@commands.has_role('날갱관리자')
 async def force_nalgang(ctx):
-        if not (ctx.author.id in admin_ids):
-            return
-        ids = ctx.message.raw_mentions
-        for Id in ids:
-            member = Member(ctx.guild.get_member(Id))
-            result = member.nalgang("강제날갱")
+    ids = ctx.message.raw_mentions
+    for Id in ids:
+        member = Member(ctx.guild.get_member(Id))
+        result = member.nalgang("강제날갱")
 
-            if result == None:
-                await ctx.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
-            else:
-                point, combo_point = result
-                await ctx.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
-                if combo_point != 0:
-                    await ctx.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
-        return
+        if result == None:
+            await ctx.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
+        else:
+            point, combo_point = result
+            await ctx.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
+            if combo_point != 0:
+                await ctx.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
+    return
 
 @client.command(name="강제변경")
+@commands.has_role('날갱관리자')
 async def force_setup(ctx, user : discord.Member, point, combo):
-    if not (ctx.author.id in admin_ids): return
     member = Member(user)
     prev_point = member.get_point()
     prev_combo = member.get_combo()
@@ -148,8 +146,8 @@ async def force_setup(ctx, user : discord.Member, point, combo):
     return
 
 @client.command(name="초기화")
+@commands.has_role('날갱관리자')
 async def force_day_reset(ctx):
-    if not (ctx.author.id in admin_ids): return
     present_time = datetime.today()
     day_reset()
     time_save(present_time)
@@ -157,8 +155,8 @@ async def force_day_reset(ctx):
     return
 
 @client.command(name="잠금")
+@commands.has_role('날갱관리자')
 async def force_lock(ctx):
-    if not (ctx.author.id in admin_ids): return
     attendance_lock(ctx.author.guild)
     await ctx.send("Successfully locked today's attendance")
     return
