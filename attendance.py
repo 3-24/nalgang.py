@@ -4,7 +4,7 @@ from config import point_by_rank, week_bonus, month_bonus
 import os
 
 db_path = "./data/member.db"
-conn = sqlite3.connect(db_path)
+conn = sqlite3.connect(db_path, check_same_thread = False)
 c = conn.cursor()
 
 class Member:

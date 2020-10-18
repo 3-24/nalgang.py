@@ -23,7 +23,10 @@ async def globally_block_dms(ctx):
 
 @client.check
 async def globally_block_bot(ctx):
-    return not ctx.author.bot
+    role = discord.utils.find(lambda r: r.name == 'NalgangAPIClient', ctx.message.guild.roles)
+    if role in ctx.author.roles:
+        return True
+    return not (ctx.author.bot)
 
 
 @client.command(name="날갱")
@@ -159,6 +162,21 @@ async def force_day_reset(ctx):
 async def force_lock(ctx):
     attendance_lock(ctx.author.guild)
     await ctx.send("Successfully locked today's attendance")
+    return
+
+@client.command(name="점수추가")
+@commands.has_role('NalgangAPIClient')
+async def api_point_add(ctx, user: discord.Member, delta:int):
+    member = Member(user)
+    prev_point = member.get_point()
+    if (prev_point + delta < 0):
+        await ctx.send("점수가 부족합니다.")
+        return
+    member.set_point(prev_point+delta)
+    if (delta >= 0):
+        await ctx.send(f"{user.display_name}에게 {delta}점이 추가되었습니다. 이제 {member.get_point()}점입니다.")
+    else:
+        await ctx.send(f"{user.display_name}이 {-delta}점 잃었습니다. 이제 {member.get_point()}점입니다.")
     return
 
 
