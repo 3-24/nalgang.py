@@ -5,7 +5,8 @@ from access_data import time_read, time_save
 from discord.ext import commands
 
 update_time_delta = timedelta(hours=6, minutes=0)
-client = commands.Bot(command_prefix='!')
+intents = discord.Intents(messages=True, guilds=True, members=True)
+client = commands.Bot(command_prefix='!', intents=intents)
 table_init()
 
 def check_int(s):
