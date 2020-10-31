@@ -103,6 +103,7 @@ async def send_ranking(ctx):
 @client.command(name="도움")
 async def help_message(ctx):
     await ctx.author.send("```"+\
+            "기본\n"+\
             "!날갱 (인사말): 날갱하기\n"+\
             "!점수 : 내 점수 확인하기\n"+\
             "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n"+\
