@@ -10,6 +10,12 @@ client = commands.Bot(command_prefix='!', description="도움말 명령어는 !�
 client.remove_command('help')
 table_init()
 
+@client.event
+async def on_ready():
+    activity = discord.CustomActivity("도움말 명령어는 !도움")
+    await client.change_presence(activity=activity)
+    print("NalgangBot is ready.")
+
 def check_int(s):
     try: return str(int(s)) == s
     except ValueError: return False
