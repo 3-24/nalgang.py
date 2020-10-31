@@ -101,7 +101,7 @@ async def give_point(ctx, user:discord.Member, point:int):
     await ctx.channel.send("짜잔! {:s}님이 {:s}님에게 {:d}점을 선물했습니다.".format(member_send.mention(), member_receive.mention(), point))
     return
 
-@client.command(name="순위표")
+@client.command(name="순위표", aliases=['점수표', '순위'])
 async def send_ranking(ctx):
     embed = discord.Embed(title="순위표", description=discord.utils.escape_markdown(scoreboard(ctx.author.guild)))
     await ctx.send(embed=embed)
