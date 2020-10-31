@@ -61,11 +61,11 @@ async def nalgang(ctx, *, arg=""):
     attendance_info = get_all_attendance_info()
     description = ""
     for index, info in enumerate(attendance_info):
-        name = ctx.guild.get_member(info[0]).display_name
+        name = discord.utils.escape_markdown(ctx.guild.get_member(info[0]).display_name)
         msg = info[1]
         description += str(index+1) + ". " + name + ": " + msg + "\n"
 
-    embed = discord.Embed(title="오늘의 날갱", description=discord.utils.escape_markdown(description))
+    embed = discord.Embed(title="오늘의 날갱", description=description)
     await ctx.channel.send(embed=embed)
     return
 
