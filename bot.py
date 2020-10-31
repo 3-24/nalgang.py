@@ -109,6 +109,7 @@ async def send_ranking(ctx):
 
 @client.command(name="도움")
 async def help_message(ctx):
+    sunrise_emoji = '\U0001f305'
     await ctx.author.send("```"+\
             "기본\n"+\
             "!날갱 (인사말): 날갱하기\n"+\
@@ -129,6 +130,7 @@ async def help_message(ctx):
             "\n"+\
             "깃허브 : https://github.com/3-24/nalgang\n"+\
             "```")
+    await ctx.message.add_reaction(sunrise_emoji)
     return
 
 
