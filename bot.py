@@ -12,7 +12,7 @@ table_init()
 
 @client.event
 async def on_ready():
-    activity = discord.CustomActivity("도움말 명령어는 !도움")
+    activity = discord.Game(name="도움말 명령어는 !도움")
     await client.change_presence(activity=activity)
     print("NalgangBot is ready.")
 
