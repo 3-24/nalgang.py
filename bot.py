@@ -6,7 +6,8 @@ from discord.ext import commands
 
 update_time_delta = timedelta(hours=6, minutes=0)
 intents = discord.Intents(messages=True, guilds=True, members=True)
-client = commands.Bot(command_prefix='!', intents=intents)
+client = commands.Bot(command_prefix='!', description="도움말 명령어는 !도움", intents=intents)
+client.remove_command('help')
 table_init()
 
 def check_int(s):
@@ -102,7 +103,7 @@ async def send_ranking(ctx):
 
 @client.command(name="도움")
 async def help_message(ctx):
-    await ctx.send("```"+\
+    await ctx.author.send("```"+\
             "!날갱 (인사말): 날갱하기\n"+\
             "!점수 : 내 점수 확인하기\n"+\
             "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n"+\
@@ -110,11 +111,14 @@ async def help_message(ctx):
             "!순위표 : 점수 순위표 출력하기\n"+\
             "!도움 : 도움말\n"+\
             "\n"+\
-            "관리자 전용\n"+\
+            "날갱관리자 역할\n"+\
             "!강제날갱 @멘션 @멘션 : 멘션한 계정들을 날갱시키기\n"+\
             "!강제변경 @멘션 점수 콤보: 멘션한 계정의 점수와 콤보를 설정하기\n"+\
             "!초기화 : 날짜 초기화시키기\n"+\
             "!잠금 : 해당 날짜의 날갱을 막기\n"+\
+            "\n"+\
+            "NalgangAPIClient 역할\n"+\
+            "!점수추가 @멘션 점수 : 계정의 점수를 입력한 점수만큼 추가하기\n"+\
             "\n"+\
             "깃허브 : https://github.com/3-24/nalgang\n"+\
             "```")
