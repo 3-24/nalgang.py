@@ -4,6 +4,12 @@ from datetime import datetime, timedelta
 from access_data import time_read, time_save
 from discord.ext import commands
 
+async def process_commands(self, message):
+    ctx = await self.get_context(message)
+    await self.invoke(ctx)
+
+commands.bot.BotBase.process_commands = process_commands
+
 update_time_delta = timedelta(hours=6, minutes=0)
 intents = discord.Intents(messages=True, guilds=True, members=True)
 client = commands.Bot(command_prefix='!', description="도움말 명령어는 !도움", intents=intents)
