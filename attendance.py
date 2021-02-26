@@ -3,7 +3,7 @@ from access_data import *
 from config import point_by_rank, week_bonus, month_bonus
 import os
 
-db_path = "./data/member.db"
+db_path = "./data/db.sqlite3"
 conn = sqlite3.connect(db_path, check_same_thread = False)
 c = conn.cursor()
 

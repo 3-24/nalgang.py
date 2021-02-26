@@ -3,6 +3,9 @@ from attendance import Member, day_reset, conn, table_init, get_all_attendance_i
 from datetime import datetime, timedelta
 from access_data import time_read, time_save
 from discord.ext import commands
+import logging
+
+logger = logging.getLogger(__name__)
 
 async def process_commands(self, message):
     ctx = await self.get_context(message)
@@ -20,11 +23,7 @@ table_init()
 async def on_ready():
     activity = discord.Game(name="도움말 명령어는 !도움")
     await client.change_presence(activity=activity)
-    print("NalgangBot is ready.")
-
-def check_int(s):
-    try: return str(int(s)) == s
-    except ValueError: return False
+    logger.info("Nalgang is ready.")
 
 def is_day_changed(past_time, present_time, delta):
     past_delta = past_time - delta
