@@ -1,19 +1,18 @@
 import os, discord
-from attendance import Member, day_reset, conn, table_init, get_all_attendance_info, scoreboard, attendance_lock
+from attendance import Member, conn, table_init, get_all_attendance_info, scoreboard
 from datetime import datetime, timedelta
-from access_data import time_read, time_save
 from discord.ext import commands
 import logging
+import asyncio
 
 logger = logging.getLogger(__name__)
+lock = asyncio.Lock()
 
 async def process_commands(self, message):
     ctx = await self.get_context(message)
     await self.invoke(ctx)
 
 commands.bot.BotBase.process_commands = process_commands
-
-update_time_delta = timedelta(hours=6, minutes=0)
 intents = discord.Intents(messages=True, guilds=True, members=True)
 client = commands.Bot(command_prefix='!', description="도움말 명령어는 !도움", intents=intents)
 client.remove_command('help')
@@ -24,11 +23,6 @@ async def on_ready():
     activity = discord.Game(name="도움말 명령어는 !도움")
     await client.change_presence(activity=activity)
     logger.info("Nalgang is ready.")
-
-def is_day_changed(past_time, present_time, delta):
-    past_delta = past_time - delta
-    present_delta = present_time - delta
-    return present_delta.day > past_delta.day or present_delta.month > past_delta.month or present_delta.year > past_delta.year
 
 @client.check
 async def globally_block_dms(ctx):
@@ -42,18 +36,27 @@ async def globally_block_bot(ctx):
     return not (ctx.author.bot)
 
 
+@client.command(name="등록")
+async def reg(ctx):
+    member = Member(ctx.author)
+    if member.exist_db():
+        await ctx.channel.send("이미 등록된 사용자입니다.")
+    else:
+        member.add_db()
+        await ctx.channel.send("등록되었습니다.")
+
 @client.command(name="날갱")
 async def nalgang(ctx, *, arg=""):
     member = Member(ctx.author)
+    if not member.exist_db():
+        await ctx.channel.send("등록되지 않은 사용자입니다.")
+        return
+
     msg = arg
     if len(msg) > 280: msg = msg[:280]
-        
-    present_time = datetime.today()
-    if is_day_changed(time_read(), present_time, update_time_delta):
-        day_reset()
-        time_save(present_time)
-
-    result = member.nalgang(msg)
+    
+    async with lock:
+        result = member.nalgang(msg)
 
     if result == None:
         await ctx.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
@@ -63,7 +66,7 @@ async def nalgang(ctx, *, arg=""):
         if combo_point != 0:
             await ctx.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
     
-    attendance_info = get_all_attendance_info()
+    attendance_info = get_all_attendance_info(member.guild)
     description = ""
     for index, info in enumerate(attendance_info):
         name = discord.utils.escape_markdown(ctx.guild.get_member(info[0]).display_name)
@@ -187,6 +190,9 @@ async def force_lock(ctx):
 @commands.has_role('NalgangAPIClient')
 async def api_point_add(ctx, user: discord.Member, delta:int):
     member = Member(user)
+    if not member.exist_db():
+        await ctx.channel.send("등록되지 않은 사용자입니다.")
+        return
     prev_point = member.get_point()
     if (prev_point + delta < 0):
         await ctx.send("점수가 부족합니다.")

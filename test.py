@@ -1,9 +1,9 @@
+# This test is deprecated.
 import unittest
 from bot import is_day_changed
 from datetime import datetime, timedelta
 from attendance import Member,c
 import random
-import access_data
 import os,sqlite3
 import config
 from functools import wraps

@@ -10,8 +10,10 @@ def hello_world():
 @app.route('/nalgang', methods=['GET'])
 def nalgang_point():
     userID = request.args.get('id',type=int)
+    userGuild =  request.args.get('guild',type=int)
     m = Member(None)
-    m.id_num = userID
+    m.id = userID
+    m.guild = userGuild
     return str(m.get_point())
     
 if __name__ == '__main__':
