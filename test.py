@@ -1,9 +1,8 @@
+# This test is deprecated.
 import unittest
-from bot import is_day_changed
 from datetime import datetime, timedelta
-from attendance import Member,c
+from attendance import Member,c, table_init, is_day_changed
 import random
-import access_data
 import os,sqlite3
 import config
 from functools import wraps
@@ -15,12 +14,8 @@ def initdata(testfunc):
     def run_test_after_init(self):
         c.execute('''DROP TABLE IF EXISTS AttendanceTable''')
         c.execute('''DROP TABLE IF EXISTS Members''')
-        c.execute('''CREATE TABLE IF NOT EXISTS Members (id integer, point integer, combo integer)''')
-        c.execute('''CREATE TABLE IF NOT EXISTS AttendanceTable (id integer, message nvarchar)''')
-        try: os.remove("./data/attendance_count.data")
-        except FileNotFoundError: pass
-        try: os.remove("./data/attendance_time.data")
-        except FileNotFoundError: pass
+        c.execute('''DROP TABLE IF EXISTS AttendanceTimeCount''')
+        table_init()
         return testfunc(self)
     return run_test_after_init
 
@@ -37,8 +32,9 @@ class TddTest(unittest.TestCase):
     @initdata
     def testDatabase(self):
         m1 = Member(None)
-        m1.id_num = 1
+        m1.id = 1
         m1.name = "Alice"
+        m1.guild = 2222
         m1.add_db(point=123456, combo=654321)
         self.assertEqual(m1.get_point(),123456)
         self.assertEqual(m1.get_combo(),654321)
@@ -46,19 +42,21 @@ class TddTest(unittest.TestCase):
     @initdata
     def testNalgang(self):
         m1 = Member(None)
-        m1.id_num = 1
+        m1.id = 1
+        m1.guild = 2222
         m1.name = "Alice"
         m1.add_db()
         m1.nalgang("")
-        self.assertEqual(m1.get_point(),config.point_by_rank[0])
+        self.assertEqual(m1.get_point(), config.point_by_rank[0])
         self.assertEqual(m1.get_combo(),1)
         self.assertIsNone(m1.nalgang(""))
     
     @initdata
     def testNalgangWeekBonus(self):
         m1 = Member(None)
-        m1.id_num = 1
+        m1.id = 1
         m1.name = "Alice"
+        m1.guild = 2222
         m1.add_db(combo=6)
         m1.nalgang("")
         self.assertEqual(m1.get_point(),config.point_by_rank[0]+config.week_bonus)
@@ -67,13 +65,50 @@ class TddTest(unittest.TestCase):
     @initdata
     def testNalgangMonthBonus(self):
         m1 = Member(None)
-        m1.id_num = 1
+        m1.id = 1
         m1.name = "Alice"
+        m1.guild = 2222
         m1.add_db(combo=29)
         m1.nalgang("")
         self.assertEqual(m1.get_point(),config.point_by_rank[0]+config.month_bonus)
         self.assertEqual(m1.get_combo(),30)
     
+    @initdata
+    def testNalgangDayReset(self):
+        m1 = Member(None)
+        m1.id = 1
+        m1.name = "Alice"
+        m1.guild = 2222
+        m1.add_db()
+        m1.nalgang("")
+        self.assertEqual(m1.get_point(), config.point_by_rank[0])
+        self.assertEqual(m1.get_combo(), 1)
+        time1 = datetime.today() + timedelta(days=1)
+        m1.nalgang("", time1)
+        self.assertEqual(m1.get_point(), config.point_by_rank[0]*2)
+        self.assertEqual(m1.get_combo(), 2)
+        time2 = datetime.today() + timedelta(days=2)
+        m1.nalgang("", time2)
+        self.assertEqual(m1.get_point(), config.point_by_rank[0]*3)
+        self.assertEqual(m1.get_combo(), 3)
+    
+    @initdata
+    def testNalgangGuildDependent(self):
+        m1 = Member(None)
+        m1.id = 1
+        m1.name = "Alice"
+        m1.guild = 2222
+        m1.add_db()
+        m2 = Member(None)
+        m2.id = 1
+        m2.name = "Alice"
+        m2.guild = 2223
+        m2.add_db()
+        m1.nalgang("")
+        m2.nalgang("")
+        self.assertEqual(m1.get_point(), config.point_by_rank[0])
+        self.assertEqual(m2.get_point(), config.point_by_rank[0])
+
     def tearDown(self):
         print("PASSED ")
 
