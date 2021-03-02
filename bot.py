@@ -37,7 +37,7 @@ async def globally_block_bot(ctx):
 
 
 @client.command(name="등록")
-async def reg(ctx):
+async def register(ctx):
     member = Member(ctx.author)
     if member.exist_db():
         await ctx.channel.send("이미 등록된 사용자입니다.")
@@ -120,6 +120,7 @@ async def help_message(ctx):
     sunrise_emoji = '\U0001f305'
     await ctx.author.send("```"+\
             "기본\n"+\
+            "!등록\n"+\
             "!날갱 (인사말): 날갱하기\n"+\
             "!점수 : 내 점수 확인하기\n"+\
             "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n"+\
