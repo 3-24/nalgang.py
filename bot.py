@@ -48,6 +48,7 @@ async def register(ctx):
 @client.command(name="날갱")
 async def nalgang(ctx, *, arg=""):
     member = Member(ctx.author)
+    logger.info(f"Querying user (id={member.id}, guild={member.guild})'s nalgang...")
     if not member.exist_db():
         await ctx.channel.send("등록되지 않은 사용자입니다.")
         return
