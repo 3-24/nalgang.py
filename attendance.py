@@ -28,7 +28,7 @@ class Member:
         return (False if P is None else True)
 
     def add_db(self,point=0,combo=0):
-        c.execute('''INSERT INTO Members VALUES (?, ?, ?, ?)''', (self.id, self.guild, point, combo))
+        c.execute('''INSERT INTO Members (id, guild, point, combo) VALUES (?, ?, ?, ?)''', (self.id, self.guild, point, combo))
         conn.commit()
 
     def get_point(self):
@@ -63,7 +63,7 @@ class Member:
         return c.fetchone() != None
     
     def set_attendance(self, msg):
-        c.execute('''INSERT INTO AttendanceTable VALUES (?, ?, ?)''', (self.id, self.guild, msg))
+        c.execute('''INSERT INTO AttendanceTable (id, guild, message) VALUES (?, ?, ?)''', (self.id, self.guild, msg))
         conn.commit()
         return
 
@@ -86,14 +86,14 @@ class Member:
         _ = c.fetchone()
 
         if _ is None:
-            c.execute('''INSERT INTO AttendanceTimeCount VALUES (?,?,?)''', (self.guild, 1, datetime.timestamp(present_time)))
+            c.execute('''INSERT INTO AttendanceTimeCount (guild, count, time) VALUES (?,?,?)''', (self.guild, 1, datetime.timestamp(present_time)))
             count = 0
         else:
             count, table_time = _
             table_time = datetime.fromtimestamp(table_time)
             if is_day_changed(table_time, present_time, update_time_delta):
                 day_reset()
-                c.execute('''INSERT INTO AttendanceTimeCount VALUES (?,?,?)''', (self.guild, 1, datetime.timestamp(present_time)))
+                c.execute('''INSERT INTO AttendanceTimeCount (guild, count, time) VALUES (?,?,?)''', (self.guild, 1, datetime.timestamp(present_time)))
                 count = 0
             else:
                 if self.check_attendance(): return None
