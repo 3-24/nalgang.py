@@ -3,10 +3,12 @@ from config import point_by_rank, week_bonus, month_bonus
 import os
 import discord
 from datetime import datetime, timedelta
+import logging
 
 conn = sqlite3.connect("./data/db.sqlite3", check_same_thread = False)
 c = conn.cursor()
 update_time_delta = timedelta(hours=6, minutes=0)
+logger = logging.getLogger(__name__)
 
 class Member:
     def __init__(self, user: discord.Member):
@@ -78,9 +80,8 @@ class Member:
             event_point += month_bonus
         self.add_point(event_point)
         return event_point
-
-    def nalgang(self,msg):
-        present_time = datetime.today()
+    
+    def nalgang(self, msg, present_time = datetime.today()):
         c.execute('''SELECT count, time FROM AttendanceTimeCount WHERE guild=?''', (self.guild,))
         _ = c.fetchone()
 
@@ -113,6 +114,8 @@ class Member:
         member.add_point(point)
         return
 
+
+
 def table_init():
     c.execute('''CREATE TABLE IF NOT EXISTS Members (id integer, guild integer, point integer, combo integer)''')
     c.execute('''CREATE TABLE IF NOT EXISTS AttendanceTable (id integer, guild integer, message nvarchar)''')
@@ -138,9 +141,9 @@ def combo_reset():
 def day_reset():
     combo_reset()
     c.execute('''DROP TABLE AttendanceTable''')
-    c.execute('''DROP_TABLE AttendanceTimeCount''')
+    c.execute('''DROP TABLE AttendanceTimeCount''')
     c.execute('''CREATE TABLE AttendanceTable (id integer, guild integer, message nvarchar)''')
-    c.exectue('''CREATE TABLE AttendanceTimeCount (guild integer, count integer, time integer)''')
+    c.execute('''CREATE TABLE AttendanceTimeCount (guild integer, count integer, time integer)''')
     conn.commit()
     return
 
