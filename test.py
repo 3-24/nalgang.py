@@ -93,6 +93,20 @@ class TddTest(unittest.TestCase):
         self.assertEqual(m1.get_combo(), 3)
     
     @initdata
+    def testNalgangPreciseDayReset(self):
+        m1 = Member(None)
+        m1.id = 1
+        m1.guild = 2222
+        m1.add_db()
+        m1.name = "Alice"
+        m1.nalgang("", datetime(2020,5,7,hour=5,minute=59,second=59))
+        self.assertEqual(m1.get_point(), config.point_by_rank[0])
+        self.assertEqual(m1.get_combo(), 1)
+        m1.nalgang("", datetime(2020,5,7,hour=6,minute=00,second=00))
+        self.assertEqual(m1.get_point(), config.point_by_rank[0]*2)
+        self.assertEqual(m1.get_combo(), 2)
+    
+    @initdata
     def testNalgangGuildDependent(self):
         m1 = Member(None)
         m1.id = 1
