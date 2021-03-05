@@ -145,51 +145,6 @@ async def help_message(ctx):
     await ctx.message.add_reaction(sunrise_emoji)
     return
 
-
-@client.command(name="강제날갱")
-@commands.has_role('날갱관리자')
-async def force_nalgang(ctx):
-    ids = ctx.message.raw_mentions
-    for Id in ids:
-        member = Member(ctx.guild.get_member(Id))
-        result = member.nalgang("강제날갱")
-
-        if result == None:
-            await ctx.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
-        else:
-            point, combo_point = result
-            await ctx.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
-            if combo_point != 0:
-                await ctx.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
-    return
-
-@client.command(name="강제변경")
-@commands.has_role('날갱관리자')
-async def force_setup(ctx, user : discord.Member, point, combo):
-    member = Member(user)
-    prev_point = member.get_point()
-    prev_combo = member.get_combo()
-    member.set_point(point)
-    member.set_combo(combo)
-    await ctx.send("{:s}'s point and combo changed: {:d}, {:d} -> {:d}, {:d}".format(member.name,prev_point, prev_combo, point, combo))
-    return
-
-@client.command(name="초기화")
-@commands.has_role('날갱관리자')
-async def force_day_reset(ctx):
-    present_time = datetime.today()
-    day_reset()
-    time_save(present_time)
-    await ctx.send("Successfully reset today's attendance list")
-    return
-
-@client.command(name="잠금")
-@commands.has_role('날갱관리자')
-async def force_lock(ctx):
-    attendance_lock(ctx.author.guild)
-    await ctx.send("Successfully locked today's attendance")
-    return
-
 @client.command(name="점수추가")
 @commands.has_role('NalgangAPIClient')
 async def api_point_add(ctx, user: discord.Member, delta:int):
