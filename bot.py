@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from discord.ext import commands
 import logging
 import asyncio
+import pytz
+from config import timezone
 
 logger = logging.getLogger(__name__)
 lock = asyncio.Lock()
@@ -55,8 +57,9 @@ async def nalgang(ctx, *, arg=""):
 
     msg = arg
     if len(msg) > 280: msg = msg[:280]
-    
-    result = member.nalgang(msg)
+
+    message_time=ctx.message.created_at.replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone))
+    result = member.nalgang(msg, present_time=message_time)
 
     if result == None:
         await ctx.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))

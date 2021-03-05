@@ -1,4 +1,3 @@
-# This test is deprecated.
 import unittest
 from datetime import datetime, timedelta
 from attendance import Member,c, table_init, is_day_changed
