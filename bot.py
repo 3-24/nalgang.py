@@ -56,8 +56,7 @@ async def nalgang(ctx, *, arg=""):
     msg = arg
     if len(msg) > 280: msg = msg[:280]
     
-    async with lock:
-        result = member.nalgang(msg)
+    result = member.nalgang(msg)
 
     if result == None:
         await ctx.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))

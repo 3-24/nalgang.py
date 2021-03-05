@@ -81,7 +81,9 @@ class Member:
         self.add_point(event_point)
         return event_point
     
-    def nalgang(self, msg, present_time = datetime.today()):
+    def nalgang(self, msg, present_time = None):
+        if present_time is None:
+            present_time = datetime.today()
         c.execute('''SELECT count, time FROM AttendanceTimeCount WHERE guild=?''', (self.guild,))
         _ = c.fetchone()
 
@@ -101,7 +103,6 @@ class Member:
         conn.commit()
 
         self.set_attendance(msg)
-
         self.add_combo(1)
         point = self.give_attendance_point(count)
         event_point = self.give_attendance_event_point()
@@ -143,7 +144,7 @@ def day_reset():
     c.execute('''DROP TABLE AttendanceTable''')
     c.execute('''DROP TABLE AttendanceTimeCount''')
     c.execute('''CREATE TABLE AttendanceTable (id integer, guild integer, message nvarchar)''')
-    c.execute('''CREATE TABLE AttendanceTimeCount (guild integer, count integer, time integer)''')
+    c.execute('''CREATE TABLE AttendanceTimeCount (guild integer, count integer, time float)''')
     conn.commit()
     return
 
