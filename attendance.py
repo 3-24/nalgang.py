@@ -78,6 +78,8 @@ class Member:
             event_point += week_bonus
         if self.get_combo() % 30 == 0:
             event_point += month_bonus
+        if self.get_combo() % 365 == 0:
+            event_point += year_bonus
         self.add_point(event_point)
         return event_point
     
