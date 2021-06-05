@@ -85,6 +85,7 @@ class Member:
     
     def nalgang(self, msg, present_time = None):
         if present_time is None:
+            logger.info("present_time is None")
             present_time = datetime.today()
         c.execute('''SELECT count, time FROM AttendanceTimeCount WHERE guild=?''', (self.guild,))
         _ = c.fetchone()
@@ -96,6 +97,7 @@ class Member:
             count, table_time = _
             table_time = datetime.fromtimestamp(table_time)
             if is_day_changed(table_time, present_time, update_time_delta):
+                logger.info("Day changed: table_time={}, present_time={}".format(table_time, present_time))
                 day_reset()
                 c.execute('''INSERT INTO AttendanceTimeCount (guild, count, time) VALUES (?,?,?)''', (self.guild, 1, datetime.timestamp(present_time)))
                 count = 0
