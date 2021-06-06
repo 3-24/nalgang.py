@@ -4,6 +4,8 @@ import os
 import discord
 from datetime import datetime, timedelta
 import logging
+import pytz
+from config import timezone
 
 conn = sqlite3.connect("./data/db.sqlite3", check_same_thread = False)
 c = conn.cursor()
@@ -95,7 +97,7 @@ class Member:
             count = 0
         else:
             count, table_time = _
-            table_time = datetime.fromtimestamp(table_time)
+            table_time = datetime.fromtimestamp(table_time, pytz.timezone(timezone))
             if is_day_changed(table_time, present_time, update_time_delta):
                 logger.info("Day changed: table_time={}, present_time={}".format(table_time, present_time))
                 day_reset()
