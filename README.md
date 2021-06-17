@@ -1,8 +1,9 @@
-<div align="center">
+
   
 # 날갱 Nalgang :calendar:
 
 디스코드 채팅방에서 출석체크를 하고 점수를 관리하는 봇입니다.
+<div align="center">
   
 ### :robot: 봇을 초대하려면 [여기](https://discord.com/api/oauth2/authorize?client_id=692341237302165554&permissions=67584&scope=bot)를 눌러주세요 :robot:
   
