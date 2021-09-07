@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from attendance import Member, c, table_init, is_day_changed
+from attendance import Member, c, table_init, is_day_changed, pytz_timezone
 import config
 from functools import wraps
 
@@ -17,9 +17,9 @@ def initdata(testfunc):
 
 @initdata
 def test_day_reset():
-    time1 = datetime(2020, 5, 7, hour=5, minute=59, second=59)
-    time2 = datetime(2020, 5, 7, hour=6, minute=0, second=0)
-    time3 = datetime(2020, 5, 7, hour=6, minute=0, second=1)
+    time1 = pytz_timezone.localize(datetime(2020, 5, 7, hour=5, minute=59, second=59))
+    time2 = pytz_timezone.localize(datetime(2020, 5, 7, hour=6, minute=0, second=0))
+    time3 = pytz_timezone.localize(datetime(2020, 5, 7, hour=6, minute=0, second=1))
     update_time_delta = timedelta(hours=6, minutes=0)
     assert(is_day_changed(time1, time2, update_time_delta))
     assert(not is_day_changed(time2, time3, update_time_delta))
@@ -75,19 +75,20 @@ def test_nalgang_month_bonus():
 
 @initdata
 def test_nalgang_day_reset():
+    local_now = datetime.now(pytz_timezone)
     m1 = Member(None)
     m1.id = 1
     m1.name = "Alice"
     m1.guild = 2222
     m1.add_db()
-    m1.nalgang("")
+    m1.nalgang("", local_now)
     assert(m1.get_point() == config.point_by_rank[0])
     assert(m1.get_combo() == 1)
-    time1 = datetime.today() + timedelta(days=1)
+    time1 = local_now + timedelta(days=1)
     m1.nalgang("", time1)
     assert(m1.get_point() == config.point_by_rank[0]*2)
     assert(m1.get_combo() == 2)
-    time2 = datetime.today() + timedelta(days=2)
+    time2 = local_now + timedelta(days=2)
     m1.nalgang("", time2)
     assert(m1.get_point() == config.point_by_rank[0]*3)
     assert(m1.get_combo() == 3)
@@ -100,10 +101,10 @@ def test_nalgang_day_reset_precise():
     m1.guild = 2222
     m1.add_db()
     m1.name = "Alice"
-    m1.nalgang("", datetime(2020, 5, 7, hour=5, minute=59, second=59))
+    m1.nalgang("", pytz_timezone.localize(datetime(2020, 5, 7, hour=5, minute=59, second=59)))
     assert(m1.get_point() == config.point_by_rank[0])
     assert(m1.get_combo() == 1)
-    m1.nalgang("", datetime(2020, 5, 7, hour=6, minute=00, second=00))
+    m1.nalgang("", pytz_timezone.localize(datetime(2020, 5, 7, hour=6, minute=00, second=00)))
     assert(m1.get_point() == config.point_by_rank[0]*2)
     assert(m1.get_combo() == 2)
 

@@ -97,7 +97,7 @@ class Member:
     def nalgang(self, msg, present_time=None):
         if present_time is None:
             logger.info("present_time is None")
-            present_time = pytz.utc.localize(datetime.utcnow()).astimezone(pytz_timezone)
+            present_time = datetime.now(pytz_timezone)
         c.execute('''SELECT count, time FROM AttendanceTimeCount WHERE guild=?''', (self.guild,))
         _ = c.fetchone()
 
