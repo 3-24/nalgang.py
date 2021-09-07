@@ -1,6 +1,5 @@
-import os, discord
-from attendance import Member, conn, table_init, get_all_attendance_info, scoreboard
-from datetime import datetime, timedelta
+import discord
+from attendance import Member, table_init, get_all_attendance_info, scoreboard
 from discord.ext import commands
 import logging
 import asyncio
@@ -9,6 +8,7 @@ from config import timezone
 
 logger = logging.getLogger(__name__)
 lock = asyncio.Lock()
+
 
 async def process_commands(self, message):
     ctx = await self.get_context(message)
@@ -20,15 +20,18 @@ client = commands.Bot(command_prefix='!', description="도움말 명령어는 !�
 client.remove_command('help')
 table_init()
 
+
 @client.event
 async def on_ready():
     activity = discord.Game(name="도움말 명령어는 !도움")
     await client.change_presence(activity=activity)
     logger.info("Nalgang is ready.")
 
+
 @client.check
 async def globally_block_dms(ctx):
     return ctx.guild is not None
+
 
 @client.check
 async def globally_block_bot(ctx):
@@ -47,6 +50,7 @@ async def register(ctx):
         member.add_db()
         await ctx.channel.send("등록되었습니다.")
 
+
 @client.command(name="날갱")
 async def nalgang(ctx, *, arg=""):
     member = Member(ctx.author)
@@ -56,19 +60,20 @@ async def nalgang(ctx, *, arg=""):
         return
 
     msg = arg
-    if len(msg) > 280: msg = msg[:280]
+    if len(msg) > 280:
+        msg = msg[:280]
 
-    message_time=ctx.message.created_at.replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone))
+    message_time = ctx.message.created_at.replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone))
     result = member.nalgang(msg, present_time=message_time)
 
-    if result == None:
+    if result is None:
         await ctx.channel.send("{:s}님은 이미 날갱되었습니다.".format(member.name))
     else:
         point, combo_point = result
-        await ctx.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name,point))
+        await ctx.channel.send("{:s}님이 날갱해서 {:d}점을 얻었습니다!".format(member.name, point))
         if combo_point != 0:
-            await ctx.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name,combo_point))
-    
+            await ctx.channel.send("와! {:s}님이 전근으로 {:d}점을 얻었습니다!".format(member.name, combo_point))
+
     attendance_info = get_all_attendance_info(member.guild)
     description = ""
     for index, info in enumerate(attendance_info):
@@ -80,24 +85,25 @@ async def nalgang(ctx, *, arg=""):
     await ctx.channel.send(embed=embed)
     return
 
+
 @client.command(name="점수")
 async def point(ctx, arg=None):
-    if arg == None: user = ctx.author
-    else: user = await commands.MemberConverter().convert(ctx,arg)
-    
+    if arg is None:
+        user = ctx.author
+    else:
+        user = await commands.MemberConverter().convert(ctx, arg)
     member = Member(user)
-    
     if not member.exist_db():
         await ctx.channel.send("등록되지 않은 사용자입니다.")
         return
-    
     await ctx.channel.send("{:s}님의 날갱점수는 {:d}점입니다. {:d}연속 출석 중입니다.".format(member.name, member.get_point(), member.get_combo()))
     return
 
+
 @client.command(name="보내기")
-async def give_point(ctx, user:discord.Member, point:int):
-    if point <= 0: return
-    
+async def give_point(ctx, user: discord.Member, point: int):
+    if point <= 0:
+        return
     member_send = Member(ctx.author)
     member_receive = Member(user)
     if not (member_send.exist_db() and member_receive.exist_db()):
@@ -112,36 +118,39 @@ async def give_point(ctx, user:discord.Member, point:int):
     await ctx.channel.send("짜잔! {:s}님이 {:s}님에게 {:d}점을 선물했습니다.".format(member_send.mention(), member_receive.mention(), point))
     return
 
+
 @client.command(name="순위표", aliases=['점수표', '순위'])
 async def send_ranking(ctx):
     embed = discord.Embed(title="순위표", description=discord.utils.escape_markdown(scoreboard(ctx.author.guild)))
     await ctx.send(embed=embed)
     return
 
+
 @client.command(name="도움")
 async def help_message(ctx):
     sunrise_emoji = '\U0001f305'
-    await ctx.author.send("```"+\
-            "기본\n"+\
-            "!등록: 등록하기\n"+\
-            "!날갱 (인사말): 날갱하기\n"+\
-            "!점수 : 내 점수 확인하기\n"+\
-            "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n"+\
-            "!보내기 @멘션 점수 : 멘션한 계정으로 점수 보내기\n"+\
-            "!순위표 : 점수 순위표 출력하기\n"+\
-            "!도움 : 도움말\n"+\
-            "\n"+\
-            "NalgangAPIClient 역할\n"+\
-            "!점수추가 @멘션 점수 : 계정의 점수를 입력한 점수만큼 추가하기\n"+\
-            "\n"+\
-            "깃허브 : https://github.com/3-24/nalgang\n"+\
-            "```")
+    await ctx.author.send("```" +
+                          "기본\n" +
+                          "!등록: 등록하기\n" +
+                          "!날갱 (인사말): 날갱하기\n" +
+                          "!점수 : 내 점수 확인하기\n" +
+                          "!점수 @멘션 : 멘션한 계정의 점수 확인하기\n" +
+                          "!보내기 @멘션 점수 : 멘션한 계정으로 점수 보내기\n" +
+                          "!순위표 : 점수 순위표 출력하기\n" +
+                          "!도움 : 도움말\n" +
+                          "\n" +
+                          "NalgangAPIClient 역할\n" +
+                          "!점수추가 @멘션 점수 : 계정의 점수를 입력한 점수만큼 추가하기\n" +
+                          "\n" +
+                          "깃허브 : https://github.com/3-24/nalgang\n" +
+                          "```")
     await ctx.message.add_reaction(sunrise_emoji)
     return
 
+
 @client.command(name="점수추가")
 @commands.has_role('NalgangAPIClient')
-async def api_point_add(ctx, user: discord.Member, delta:int):
+async def api_point_add(ctx, user: discord.Member, delta: int):
     member = Member(user)
     if not member.exist_db():
         await ctx.channel.send("등록되지 않은 사용자입니다.")

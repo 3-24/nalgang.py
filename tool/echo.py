@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 import discord
-import random
 import os
 
 TOKEN = os.environ["echo_TOKEN"]
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print('Echo bot is ready')
+
 
 @client.event
 async def on_message(message):

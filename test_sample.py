@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
-from attendance import Member,c, table_init, is_day_changed
-import random
-import os,sqlite3
+from attendance import Member, c, table_init, is_day_changed
+import os
 import config
 from functools import wraps
 
-if not os.path.exists("data"): os.makedirs("data")
+if not os.path.exists("data"):
+    os.makedirs("data")
+
 
 def initdata(testfunc):
     @wraps(testfunc)
@@ -17,14 +18,16 @@ def initdata(testfunc):
         return testfunc()
     return run_test_after_init
 
+
 @initdata
 def test_day_reset():
-    time1 = datetime(2020,5,7,hour=5,minute=59,second=59)
-    time2 = datetime(2020,5,7,hour=6,minute=0,second=0)
-    time3 = datetime(2020,5,7,hour=6,minute=0,second=1)
+    time1 = datetime(2020, 5, 7, hour=5, minute=59, second=59)
+    time2 = datetime(2020, 5, 7, hour=6, minute=0, second=0)
+    time3 = datetime(2020, 5, 7, hour=6, minute=0, second=1)
     update_time_delta = timedelta(hours=6, minutes=0)
-    assert(is_day_changed(time1,time2, update_time_delta))
-    assert(not is_day_changed(time2,time3,update_time_delta))
+    assert(is_day_changed(time1, time2, update_time_delta))
+    assert(not is_day_changed(time2, time3, update_time_delta))
+
 
 @initdata
 def test_database():
@@ -36,6 +39,7 @@ def test_database():
     assert(m1.get_point() == 123456)
     assert(m1.get_combo() == 654321)
 
+
 @initdata
 def test_nalgang():
     m1 = Member(None)
@@ -45,8 +49,9 @@ def test_nalgang():
     m1.add_db()
     m1.nalgang("")
     assert(m1.get_point() == config.point_by_rank[0])
-    assert(m1.get_combo() ==1)
+    assert(m1.get_combo() == 1)
     assert(m1.nalgang("") is None)
+
 
 @initdata
 def test_nalgang_week_bonus():
@@ -58,7 +63,8 @@ def test_nalgang_week_bonus():
     m1.nalgang("")
     assert (m1.get_point() == config.point_by_rank[0]+config.week_bonus)
     assert (m1.get_combo() == 7)
-    
+
+
 @initdata
 def test_nalgang_month_bonus():
     m1 = Member(None)
@@ -69,7 +75,8 @@ def test_nalgang_month_bonus():
     m1.nalgang("")
     assert(m1.get_point() == config.point_by_rank[0]+config.month_bonus)
     assert(m1.get_combo() == 30)
-    
+
+
 @initdata
 def test_nalgang_day_reset():
     m1 = Member(None)
@@ -88,7 +95,8 @@ def test_nalgang_day_reset():
     m1.nalgang("", time2)
     assert(m1.get_point() == config.point_by_rank[0]*3)
     assert(m1.get_combo() == 3)
-    
+
+
 @initdata
 def test_nalgang_day_rest_precise():
     m1 = Member(None)
@@ -96,12 +104,13 @@ def test_nalgang_day_rest_precise():
     m1.guild = 2222
     m1.add_db()
     m1.name = "Alice"
-    m1.nalgang("", datetime(2020,5,7,hour=5,minute=59,second=59))
+    m1.nalgang("", datetime(2020, 5, 7, hour=5, minute=59, second=59))
     assert(m1.get_point() == config.point_by_rank[0])
     assert(m1.get_combo() == 1)
-    m1.nalgang("", datetime(2020,5,7,hour=6,minute=00,second=00))
+    m1.nalgang("", datetime(2020, 5, 7, hour=6, minute=00, second=00))
     assert(m1.get_point() == config.point_by_rank[0]*2)
     assert(m1.get_combo() == 2)
+
 
 @initdata
 def test_nalgang_guild_dependent():
