@@ -36,4 +36,3 @@ jobs:
         coverage run --source . --omit test_sample.py -m pytest test_sample.py
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v2.0.3
-      with: 
