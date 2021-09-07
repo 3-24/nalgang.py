@@ -7,6 +7,8 @@ import pytz
 from config import timezone
 import os
 
+pytz_timezone = pytz.timezone(timezone)
+
 if not os.path.exists("data"):
     os.makedirs("data")
 conn = sqlite3.connect("./data/db.sqlite3", check_same_thread=False)
@@ -95,7 +97,7 @@ class Member:
     def nalgang(self, msg, present_time=None):
         if present_time is None:
             logger.info("present_time is None")
-            present_time = datetime.today()
+            present_time = pytz.utc.localize(datetime.utcnow()).astimezone(pytz_timezone)
         c.execute('''SELECT count, time FROM AttendanceTimeCount WHERE guild=?''', (self.guild,))
         _ = c.fetchone()
 
@@ -104,7 +106,7 @@ class Member:
             count = 0
         else:
             count, table_time = _
-            table_time = datetime.fromtimestamp(table_time, pytz.timezone(timezone))
+            table_time = datetime.fromtimestamp(table_time, pytz_timezone)
             if is_day_changed(table_time, present_time, update_time_delta):
                 logger.info("Day changed: table_time={}, present_time={}".format(table_time, present_time))
                 day_reset()
