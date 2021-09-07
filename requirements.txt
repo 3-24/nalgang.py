@@ -2,5 +2,3 @@ discord.py
 aiohttp
 Flask
 pytz
-pytest
-flake8
