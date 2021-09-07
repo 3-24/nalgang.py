@@ -2,6 +2,8 @@
   
 # 날갱 Nalgang :calendar:
 
+![workflow](https://github.com/3-24/nalgang/actions/workflows/python-app.yml/badge.svg)
+
 디스코드 채팅방에서 출석체크를 하고 점수를 관리하는 봇입니다.
 <div align="center">
   
