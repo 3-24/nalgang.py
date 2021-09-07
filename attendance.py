@@ -6,6 +6,8 @@ import logging
 import pytz
 from config import timezone
 
+if not os.path.exists("data"):
+    os.makedirs("data")
 conn = sqlite3.connect("./data/db.sqlite3", check_same_thread=False)
 c = conn.cursor()
 update_time_delta = timedelta(hours=6, minutes=0)

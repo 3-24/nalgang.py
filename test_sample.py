@@ -4,9 +4,6 @@ import os
 import config
 from functools import wraps
 
-if not os.path.exists("data"):
-    os.makedirs("data")
-
 
 def initdata(testfunc):
     @wraps(testfunc)

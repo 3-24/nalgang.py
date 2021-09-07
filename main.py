@@ -4,11 +4,6 @@ import sys
 import logging
 from bot import client
 
-# change working dir as script dir to get fixed relative access to data
-os.chdir(sys.path[0])
-if not os.path.exists("data"):
-    os.makedirs("data")
-
 if not __name__ == "__main__":
     exit()
 
