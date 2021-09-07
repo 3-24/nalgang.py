@@ -94,7 +94,7 @@ def test_nalgang_day_reset():
 
 
 @initdata
-def test_nalgang_day_rest_precise():
+def test_nalgang_day_reset_precise():
     m1 = Member(None)
     m1.id = 1
     m1.guild = 2222
