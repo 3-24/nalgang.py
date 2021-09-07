@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from attendance import Member, c, table_init, is_day_changed
-import os
 import config
 from functools import wraps
 

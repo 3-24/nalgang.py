@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import logging
 import pytz
 from config import timezone
+import os
 
 if not os.path.exists("data"):
     os.makedirs("data")
