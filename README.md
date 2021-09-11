@@ -2,7 +2,7 @@
   
 # 날갱 Nalgang :calendar:
 
-![workflow](https://github.com/3-24/nalgang/actions/workflows/python-app.yml/badge.svg) ![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m789126293-ee416185a54d15d7b5111c93)
+![workflow](https://github.com/3-24/nalgang/actions/workflows/python-app.yml/badge.svg) ![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m789126293-ee416185a54d15d7b5111c93) ![coverage](https://img.shields.io/codecov/c/github/3-24/nalgang)
 
 디스코드 채팅방에서 출석체크를 하고 점수를 관리하는 봇입니다.
 <div align="center">
